@@ -15,6 +15,6 @@ function view($view, $data = []) {
     if (file_exists($file)) {
         require $file;
     } else {
-        echo "Vista no encontrada: " . $file;
+        throw new Exception("Vista no encontrada: $file");
     }
 }
