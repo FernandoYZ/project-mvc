@@ -3,14 +3,32 @@
 namespace Core;
 
 class Views {
+    protected $compiler;
+    protected $cache = [];
+    protected $cacheTimestamps = [];
+
+    public function __construct() {
+        $this->compiler = new ViewCompiler();
+    }
+
     public function getView($controller, $view, $data = []) {
-        $controller = str_replace('App\\Controllers\\', '', $controller);
-        $viewPath = __DIR__ . '/../resources/Views/' . $controller . '/' . $view . '.php';
-        if (file_exists($viewPath)) {
-            extract($data);
-            require $viewPath;
+        $viewPath = $this->getViewPath($controller, $view);
+        $layoutPath = $this->getViewPath('layouts', 'base');
+
+        $lastModified = filemtime($viewPath);
+
+        if (isset($this->cache[$viewPath]) && $this->cacheTimestamps[$viewPath] >= $lastModified) {
+            echo $this->cache[$viewPath];
         } else {
-            throw new \Exception("View file not found: $viewPath");
+            $output = $this->compiler->renderWithLayout($layoutPath, $viewPath, $data);
+            $this->cache[$viewPath] = $output;
+            $this->cacheTimestamps[$viewPath] = $lastModified;
+            echo $output;
         }
+    }
+
+    protected function getViewPath($controller, $view) {
+        $controller = str_replace('App\\Controllers\\', '', $controller);
+        return __DIR__ . '/../resources/Views/' . $controller . '/' . $view . '.php';
     }
 }
