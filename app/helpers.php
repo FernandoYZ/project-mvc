@@ -1,26 +1,20 @@
 <?php
 
-if (!function_exists('loadEnv')) {
-    function loadEnv($path) {
-        if (!file_exists($path)) {
-            return;
-        }
+function env($key, $default = null) {
+    $value = getenv($key);
+    if ($value === false) {
+        return $default;
+    }
+    return $value;
+}
 
-        $dotenv = file($path);
-        foreach ($dotenv as $line) {
-            if(strpos(trim($line), '#')===0) {
-                continue;
-            }
-
-            list($key, $value) = explode('=', $line, 2);
-            $key=trim($key);
-            $value=trim($value);
-
-            if (!array_key_exists($key, $_SERVER) && !array_key_exists($key, $_ENV)) {
-                putenv(sprintf('%s=%s', $key, $value));
-                $_ENV[$key]=$value;
-                $_SERVER[$key]=$value;
-            }
-        }
+function view($view, $data = []) {
+    extract($data);
+    $view = str_replace('.','/', $view);
+    $file = __DIR__ . '/../resources/Views/' . $view. 'php';
+    if (file_exists($file)) {
+        require $file;
+    } else {
+        echo "Vista no encontrada: " . $file;
     }
 }
