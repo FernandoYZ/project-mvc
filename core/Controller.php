@@ -20,8 +20,29 @@ class Controller {
         if (file_exists($modelPath)) {
             require_once $modelPath;
             if (class_exists($modelClass)) {
-                $this->model = new $modelClass($this->database);
+                $this->model = new $modelClass();
+                $this->model->setConnection($this->database->getConnection());
             }
         }
+    }
+
+    protected function validate($data, $rules) {
+        $validator = new Validation($data, $rules);
+        if ($validator->validate()) {
+            return true;
+        }
+        return $validator->getErrors();
+    }
+
+    protected function response($data, $status = 200) {
+        Response::json($data, $status);
+    }
+
+    protected function errorResponse($message, $status = 400) {
+        Response::error($message, $status);
+    }
+
+    protected function view($view, $data = []) {
+        $this->views->render($view, $data);
     }
 }
