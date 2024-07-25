@@ -20,8 +20,23 @@ class Controller {
         if (file_exists($modelPath)) {
             require_once $modelPath;
             if (class_exists($modelClass)) {
-                $this->model = new $modelClass($this->database);
+                $this->model = new $modelClass();
+                if (method_exists($this->model, 'setConnection')) {
+                    $this->model->setConnection($this->database->getConnection());
+                }
             }
         }
+    }
+
+    protected function validate($data, $rules) {
+        // Aquí podrías implementar la lógica de validación
+        return true;
+    }
+
+    protected function jsonResponse($data, $status = 200) {
+        http_response_code($status);
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
     }
 }

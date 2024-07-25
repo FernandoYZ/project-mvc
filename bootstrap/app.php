@@ -14,18 +14,12 @@ $dotenv->load();
 $config = require_once __DIR__ . '/../config/app.php';
 $dbConfig = require_once __DIR__ . '/../config/database.php';
 
-// Configuración global
-$GLOBALS['config'] = array_merge($config, $dbConfig);
-
-// Asegúrate de que 'database' es un array dentro de $GLOBALS['config']
-$databaseConfig = $GLOBALS['config']; // No solo 'database', sino todo el config array
-
-$database = new Database($databaseConfig);
+$database = new Database($dbConfig);
 $router = new Router($database);
 
 require_once __DIR__ . '/../routes/web.php';
 
-$app = new App($GLOBALS['config'], $router, $database);
+$app = new App($config, $router, $database);
 return $app;
 
 class App {

@@ -8,10 +8,6 @@ function env($key, $default = null) {
     return $value;
 }
 
-function config($key) {
-    return $GLOBALS['config'][$key] ?? null;
-}
-
 function view($view, $data = []) {
     extract($data);
     $view = str_replace('.', '/', $view);
