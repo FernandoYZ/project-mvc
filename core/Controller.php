@@ -21,22 +21,28 @@ class Controller {
             require_once $modelPath;
             if (class_exists($modelClass)) {
                 $this->model = new $modelClass();
-                if (method_exists($this->model, 'setConnection')) {
-                    $this->model->setConnection($this->database->getConnection());
-                }
+                $this->model->setConnection($this->database->getConnection());
             }
         }
     }
 
     protected function validate($data, $rules) {
-        // Aquí podrías implementar la lógica de validación
-        return true;
+        $validator = new Validation($data, $rules);
+        if ($validator->validate()) {
+            return true;
+        }
+        return $validator->getErrors();
     }
 
-    protected function jsonResponse($data, $status = 200) {
-        http_response_code($status);
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
+    protected function response($data, $status = 200) {
+        Response::json($data, $status);
+    }
+
+    protected function errorResponse($message, $status = 400) {
+        Response::error($message, $status);
+    }
+
+    protected function view($view, $data = []) {
+        $this->views->render($view, $data);
     }
 }

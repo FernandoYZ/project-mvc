@@ -19,6 +19,10 @@ function view($view, $data = []) {
     }
 }
 
+function config($key) {
+    return $GLOBALS['config'][$key] ?? null;
+}
+
 function layout($path) {
     $path = str_replace('.', '/', $path);
     $file = realpath(__DIR__ . '/../resources/Views/layouts/' . $path . '.php');
