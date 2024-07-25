@@ -1,9 +1,7 @@
-<?php 
+<?php
 
-require_once __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
 
-$config = require_once __DIR__ . '/../config/app.php';
+$request = $_SERVER['REQUEST_URI'];
 
-$app = new App($config);
-
-$app -> handle($_SERVER['REQUEST_URI']);
+$app->handle($request);
