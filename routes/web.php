@@ -1,8 +1,8 @@
 <?php
 
-use Core\Router;
-use App\Controllers\UserController;
+use Core\Route;
 
-$router->get('/', function () {
+Route::get('/', function () {
     return view('welcome');
 });
+

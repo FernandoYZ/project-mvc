@@ -31,6 +31,13 @@ class Views {
         }
     }
 
+    public function clearCache() {
+        $files = glob($this->cacheDir . '*.php');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
+
     protected function getViewPath($controller, $view) {
         $controller = str_replace('App\\Controllers\\', '', $controller);
         return __DIR__ . '/../resources/Views/' . $controller . '/' . $view . '.php';
