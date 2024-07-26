@@ -8,33 +8,21 @@ class Route {
     protected static $name = '';
     protected static $middleware = [];
 
-    /**
-     * Set prefix for routes
-     */
     public static function prefix($prefix) {
         self::$prefix = trim($prefix, '/') . '/';
         return new static;
     }
 
-    /**
-     * Set name for routes
-     */
     public static function name($name) {
         self::$name = trim($name, '.') . '.';
         return new static;
     }
 
-    /**
-     * Set middleware for routes
-     */
     public static function middleware($middleware) {
         self::$middleware = is_array($middleware) ? $middleware : [$middleware];
         return new static;
     }
 
-    /**
-     * Group routes
-     */
     public static function group($callback) {
         call_user_func($callback);
         self::$prefix = '';
@@ -42,9 +30,6 @@ class Route {
         self::$middleware = [];
     }
 
-    /**
-     * Add a route
-     */
     public static function add($method, $uri, $handler) {
         $uri = self::$prefix . trim($uri, '/');
         $name = self::$name . $uri;
@@ -83,10 +68,45 @@ class Route {
         self::delete("$baseUri/{id}", [$controller, 'destroy']);
     }
 
-    /**
-     * Get all routes
-     */
     public static function getRoutes() {
         return self::$routes;
+    }
+
+    public static function run($uri) {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = trim($uri, '/');
+
+        foreach (self::$routes[$method] as $route => $details) {
+            if (preg_match("#^$route$#", $uri, $matches)) {
+                array_shift($matches); // Remove full match
+                return self::dispatch($details['handler'], $details['middleware'], $matches);
+            }
+        }
+
+        throw new \Exception('Ruta no encontrada', 404);
+    }
+
+    protected static function dispatch($handler, $middlewares, $params) {
+        $middlewarePipeline = array_reduce(
+            array_reverse($middlewares),
+            function ($next, $middleware) {
+                return function ($request) use ($next, $middleware) {
+                    return (new $middleware)->handle($request, $next);
+                };
+            },
+            function ($request) use ($handler, $params) {
+                if (is_callable($handler)) {
+                    call_user_func_array($handler, $params);
+                } elseif (is_array($handler) && count($handler) === 2) {
+                    list($controller, $method) = $handler;
+                    $controllerInstance = new $controller;
+                    call_user_func_array([$controllerInstance, $method], $params);
+                } else {
+                    throw new \Exception('Handler inválido');
+                }
+            }
+        );
+
+        return $middlewarePipeline($_SERVER);
     }
 }
