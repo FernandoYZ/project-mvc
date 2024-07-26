@@ -41,8 +41,4 @@ class Controller {
     protected function errorResponse($message, $status = 400) {
         Response::error($message, $status);
     }
-
-    protected function view($view, $data = []) {
-        $this->views->render($view, $data);
-    }
 }
