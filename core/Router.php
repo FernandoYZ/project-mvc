@@ -3,6 +3,7 @@
 namespace Core;
 
 class Router {
+    protected $routes = [];
     protected $database;
     protected $exceptionHandler;
 
@@ -11,17 +12,36 @@ class Router {
         $this->exceptionHandler = new ExceptionHandler();
     }
 
+    public function get($uri, $handler) {
+        $this->addRoute('GET', $uri, $handler);
+    }
+
+    public function post($uri, $handler) {
+        $this->addRoute('POST', $uri, $handler);
+    }
+
+    public function put($uri, $handler) {
+        $this->addRoute('PUT', $uri, $handler);
+    }
+
+    public function delete($uri, $handler) {
+        $this->addRoute('DELETE', $uri, $handler);
+    }
+
+    protected function addRoute($method, $uri, $handler) {
+        $uri = trim($uri, '/');
+        $uriPattern = preg_replace('/\{[^\}]+\}/', '([^/]+)', $uri);
+        $this->routes[$method][$uriPattern] = $handler;
+    }
+
     public function route($requestUri) {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = trim($requestUri, '/');
-        $routes = Route::getRoutes();
 
-        if (isset($routes[$method])) {
-            foreach ($routes[$method] as $route => $details) {
-                if (preg_match("#^$route$#", $uri, $matches)) {
-                    array_shift($matches); // Remove full match
-                    return $this->dispatch($details['handler'], $matches);
-                }
+        foreach ($this->routes[$method] as $route => $handler) {
+            if (preg_match("#^$route$#", $uri, $matches)) {
+                array_shift($matches); // Remove full match
+                return $this->dispatch($handler, $matches);
             }
         }
 
@@ -32,7 +52,20 @@ class Router {
         try {
             if (is_callable($handler)) {
                 call_user_func_array($handler, $params);
-            } elseif (is_array($handler) && count($handler) == 2) {
+            } elseif (is_string($handler)) {
+                list($controller, $action) = explode('@', $handler);
+                $controller = "App\\Controllers\\" . $controller;
+                if (class_exists($controller)) {
+                    $controllerInstance = new $controller($this->database);
+                    if (method_exists($controllerInstance, $action)) {
+                        call_user_func_array([$controllerInstance, $action], $params);
+                    } else {
+                        throw new \Exception('Método no encontrado', 404);
+                    }
+                } else {
+                    throw new \Exception('Controlador no encontrado', 404);
+                }
+            } elseif (is_array($handler)) {
                 list($controller, $action) = $handler;
                 if (class_exists($controller)) {
                     $controllerInstance = new $controller($this->database);
