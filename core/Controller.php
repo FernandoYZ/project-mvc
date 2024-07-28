@@ -33,12 +33,4 @@ class Controller {
         }
         return $validator->getErrors();
     }
-
-    protected function response($data, $status = 200) {
-        Response::json($data, $status);
-    }
-
-    protected function errorResponse($message, $status = 400) {
-        Response::error($message, $status);
-    }
 }

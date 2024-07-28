@@ -13,4 +13,12 @@ class Response {
     public static function error($message, $status = 400) {
         self::json(['error' => $message], $status);
     }
+
+    protected function response($data, $status = 200) {
+        Response::json($data, $status);
+    }
+
+    protected function errorResponse($message, $status = 400) {
+        Response::error($message, $status);
+    }
 }
