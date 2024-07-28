@@ -2,7 +2,17 @@
 
 namespace Core;
 
-abstract class Middleware {
-    abstract public function handle($request, \Closure $next);
-}
+class Middleware {
+    protected static $middleware = [];
 
+    public static function register($name, $class) {
+        self::$middleware[$name] = $class;
+    }
+
+    public static function resolve($name) {
+        if (isset(self::$middleware[$name])) {
+            return self::$middleware[$name];
+        }
+        throw new \Exception("Middleware {$name} no encontrado");
+    }
+}

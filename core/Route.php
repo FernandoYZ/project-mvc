@@ -36,7 +36,9 @@ class Route {
     public static function add($method, $uri, $handler) {
         $uri = self::$prefix . trim($uri, '/');
         $name = self::$name . str_replace('/', '.', $uri);
-        $middlewares = self::$middleware;
+        $middlewares = array_map(function ($middleware) {
+            return Middleware::resolve($middleware);
+        }, self::$middleware);
         self::$routes[$method][$uri] = [
             'handler' => $handler,
             'name' => $name,

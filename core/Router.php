@@ -8,15 +8,22 @@ class Router {
 
     public function __construct(Database $database) {
         $this->database = $database;
-        $this->exceptionHandler = new ExceptionHandler();
-        Route::setExceptionHandler($this->exceptionHandler);
+    }
+
+    public function setExceptionHandler(ExceptionHandler $handler) {
+        $this->exceptionHandler = $handler;
+        Route::setExceptionHandler($handler);
     }
 
     public function route($requestUri) {
         try {
             Route::run($requestUri);
         } catch (\Exception $e) {
-            $this->exceptionHandler->handle($e);
+            if ($this->exceptionHandler) {
+                $this->exceptionHandler->handle($e);
+            } else {
+                throw $e;
+            }
         }
     }
 }
