@@ -4,7 +4,7 @@ namespace Core;
 
 class Database {
     protected $connections = [];
-    protected $config; // Agrega esta línea para almacenar la configuración
+    protected $config;
 
     public function __construct(array $config) {
         $this->config = $config;
