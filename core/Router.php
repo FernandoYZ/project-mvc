@@ -9,6 +9,7 @@ class Router {
     public function __construct(Database $database) {
         $this->database = $database;
         $this->exceptionHandler = new ExceptionHandler();
+        Route::setExceptionHandler($this->exceptionHandler);
     }
 
     public function route($requestUri) {

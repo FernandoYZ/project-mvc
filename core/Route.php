@@ -7,6 +7,11 @@ class Route {
     protected static $prefix = '';
     protected static $name = '';
     protected static $middleware = [];
+    protected static $exceptionHandler;
+
+    public static function setExceptionHandler($handler) {
+        self::$exceptionHandler = $handler;
+    }
 
     public static function prefix($prefix) {
         self::$prefix = trim($prefix, '/') . '/';
@@ -25,14 +30,12 @@ class Route {
 
     public static function group($callback) {
         call_user_func($callback);
-        self::$prefix = '';
-        self::$name = '';
-        self::$middleware = [];
+        self::reset();
     }
 
     public static function add($method, $uri, $handler) {
         $uri = self::$prefix . trim($uri, '/');
-        $name = self::$name . $uri;
+        $name = self::$name . str_replace('/', '.', $uri);
         $middlewares = self::$middleware;
         self::$routes[$method][$uri] = [
             'handler' => $handler,
@@ -76,6 +79,11 @@ class Route {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = trim($uri, '/');
 
+        if (!isset(self::$routes[$method])) {
+            self::$exceptionHandler->handle(new \Exception('Método HTTP no soportado', 405));
+            return;
+        }
+
         foreach (self::$routes[$method] as $route => $details) {
             if (preg_match("#^$route$#", $uri, $matches)) {
                 array_shift($matches); // Remove full match
@@ -83,7 +91,7 @@ class Route {
             }
         }
 
-        throw new \Exception('Ruta no encontrada', 404);
+        self::$exceptionHandler->handle(new \Exception('Ruta no encontrada', 404));
     }
 
     protected static function dispatch($handler, $middlewares, $params) {
@@ -102,11 +110,17 @@ class Route {
                     $controllerInstance = new $controller;
                     call_user_func_array([$controllerInstance, $method], $params);
                 } else {
-                    throw new \Exception('Handler inválido');
+                    self::$exceptionHandler->handle(new \Exception('Handler inválido'));
                 }
             }
         );
 
         return $middlewarePipeline($_SERVER);
+    }
+
+    protected static function reset() {
+        self::$prefix = '';
+        self::$name = '';
+        self::$middleware = [];
     }
 }
