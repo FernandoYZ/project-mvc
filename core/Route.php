@@ -44,22 +44,23 @@ class Route {
             'name' => $name,
             'middleware' => $middlewares
         ];
+        return new static;
     }
 
     public static function get($uri, $handler) {
-        self::add('GET', $uri, $handler);
+        return self::add('GET', $uri, $handler);
     }
 
     public static function post($uri, $handler) {
-        self::add('POST', $uri, $handler);
+        return self::add('POST', $uri, $handler);
     }
 
     public static function put($uri, $handler) {
-        self::add('PUT', $uri, $handler);
+        return self::add('PUT', $uri, $handler);
     }
 
     public static function delete($uri, $handler) {
-        self::add('DELETE', $uri, $handler);
+        return self::add('DELETE', $uri, $handler);
     }
 
     public static function resource($uri, $controller) {
