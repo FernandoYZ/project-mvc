@@ -4,11 +4,10 @@ namespace App\Http\Middleware;
 
 use Core\Middleware;
 
-class Authenticate extends Middleware {
-    public function handle($request, \Closure $next) {
+class Authenticate {
+    public function handle($request, $next) {
         if (!isset($_SESSION['user'])) {
-            header('Location: /login');
-            exit;
+            throw new \Exception('No autenticado', 401);
         }
         return $next($request);
     }
