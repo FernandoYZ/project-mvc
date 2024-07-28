@@ -2,8 +2,6 @@
 
 namespace Core;
 
-// Reemplazo de ORM a Builder. Por ahora funciona
-
 class QueryBuilder {
     protected $pdo;
     protected $query;

@@ -11,7 +11,7 @@ class Middleware {
 
     public static function resolve($name) {
         if (isset(self::$middleware[$name])) {
-            return self::$middleware[$name];
+            return new self::$middleware[$name]();
         }
         throw new \Exception("Middleware {$name} no encontrado");
     }

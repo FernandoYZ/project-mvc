@@ -4,6 +4,7 @@ namespace Core;
 
 class Route {
     protected static $routes = [];
+    protected static $namedRoutes = [];
     protected static $prefix = '';
     protected static $name = '';
     protected static $middleware = [];
@@ -36,14 +37,15 @@ class Route {
     public static function add($method, $uri, $handler) {
         $uri = self::$prefix . trim($uri, '/');
         $name = self::$name . str_replace('/', '.', $uri);
-        $middlewares = array_map(function ($middleware) {
-            return Middleware::resolve($middleware);
-        }, self::$middleware);
+        $middlewares = array_map([MiddlewareHandler::class, 'resolve'], self::$middleware);
         self::$routes[$method][$uri] = [
             'handler' => $handler,
             'name' => $name,
             'middleware' => $middlewares
         ];
+        if (!empty($name)) {
+            self::$namedRoutes[$name] = $uri;
+        }
         return new static;
     }
 
@@ -78,52 +80,39 @@ class Route {
         return self::$routes;
     }
 
-    public static function run($uri) {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $uri = trim($uri, '/');
-
+    public static function run() {
+        $request = new Request();
+        $response = new Response();
+    
+        $method = $request->getMethod();
+        $uri = $request->getUri();
+    
         if (!isset(self::$routes[$method])) {
-            self::$exceptionHandler->handle(new \Exception('Método HTTP no soportado', 405));
+            self::handleException(new \Exception('Método HTTP no soportado', 405));
             return;
         }
-
+    
         foreach (self::$routes[$method] as $route => $details) {
             if (preg_match("#^$route$#", $uri, $matches)) {
                 array_shift($matches); // Remove full match
-                return self::dispatch($details['handler'], $details['middleware'], $matches);
+                return MiddlewareHandler::applyMiddlewares($details['middleware'], $details['handler'], $matches);
             }
         }
-
-        self::$exceptionHandler->handle(new \Exception('Ruta no encontrada', 404));
-    }
-
-    protected static function dispatch($handler, $middlewares, $params) {
-        $middlewarePipeline = array_reduce(
-            array_reverse($middlewares),
-            function ($next, $middleware) {
-                return function ($request) use ($next, $middleware) {
-                    return (new $middleware)->handle($request, $next);
-                };
-            },
-            function ($request) use ($handler, $params) {
-                if (is_callable($handler)) {
-                    call_user_func_array($handler, $params);
-                } elseif (is_array($handler) && count($handler) === 2) {
-                    list($controller, $method) = $handler;
-                    $controllerInstance = new $controller;
-                    call_user_func_array([$controllerInstance, $method], $params);
-                } else {
-                    self::$exceptionHandler->handle(new \Exception('Handler inválido'));
-                }
-            }
-        );
-
-        return $middlewarePipeline($_SERVER);
-    }
+    
+        self::handleException(new \Exception('Ruta no encontrada', 404));
+    }    
 
     protected static function reset() {
         self::$prefix = '';
         self::$name = '';
         self::$middleware = [];
+    }
+    
+    public static function handleException($exception) {
+        if (self::$exceptionHandler) {
+            self::$exceptionHandler->handle($exception);
+        } else {
+            throw $exception;
+        }
     }
 }
