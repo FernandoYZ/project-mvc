@@ -7,8 +7,8 @@ class Controller {
     protected $model;
     protected $database;
 
-    public function __construct(Database $database) {
-        $this->views = new Views();
+    public function __construct(Views $views, Database $database) {
+        $this->views = $views;
         $this->database = $database;
         $this->loadModel();
     }

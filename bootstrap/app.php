@@ -14,10 +14,8 @@ $dotenv->load();
 $config = require_once __DIR__ . '/../config/app.php';
 $dbConfig = require_once __DIR__ . '/../config/database.php';
 
-// Configuración global
 $GLOBALS['config'] = array_merge($config, ['database' => $dbConfig]);
 
-// Asegúrate de que 'database' es un array dentro de $GLOBALS['config']
 $databaseConfig = $GLOBALS['config']['database'];
 
 $database = new Database($databaseConfig);
