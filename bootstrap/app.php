@@ -6,6 +6,7 @@ require_once __DIR__ . '/../app/helpers.php';
 
 use Core\Router;
 use Core\Database;
+use Core\Views;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
@@ -19,7 +20,8 @@ $GLOBALS['config'] = array_merge($config, ['database' => $dbConfig]);
 $databaseConfig = $GLOBALS['config']['database'];
 
 $database = new Database($databaseConfig);
-$router = new Router($database);
+$views = new Views();
+$router = new Router($database, $views);
 
 require_once __DIR__ . '/../routes/web.php';
 
