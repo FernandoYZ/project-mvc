@@ -14,7 +14,7 @@ class Controller {
     }
 
     protected function loadModel() {
-        $modelClass = str_replace('App\\Controllers\\', 'App\\Models\\', get_class($this));
+        $modelClass = str_replace('App\\Http\\Controllers\\', 'App\\Models\\', get_class($this));
         $modelClass = str_replace('Controller', '', $modelClass);
         $modelPath = __DIR__ . '/../app/Models/' . basename(str_replace('\\', '/', $modelClass)) . '.php';
         if (file_exists($modelPath)) {
@@ -22,9 +22,11 @@ class Controller {
             if (class_exists($modelClass)) {
                 $this->model = new $modelClass();
                 $this->model->setConnection($this->database->getConnection());
+            } else {
+                throw new \Exception("Modelo $modelClass no encontrado");
             }
         }
-    }
+    }    
 
     protected function validate($data, $rules) {
         $validator = new Validation($data, $rules);
