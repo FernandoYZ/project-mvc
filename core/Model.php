@@ -50,66 +50,32 @@ class Model {
         return strtolower((new \ReflectionClass($this))->getShortName());
     }
 
-    /*
-    |---------------------------------------------------------------------------
-    | Define una relación de uno a uno
-    |---------------------------------------------------------------------------
-    */
+    // Relaciones
     public function hasOne($relatedModel, $foreignKey, $localKey = 'id') {
         $relatedInstance = new $relatedModel();
         return $relatedInstance->where($foreignKey, '=', $this->$localKey)->first();
     }
-    
-    /*
-    |---------------------------------------------------------------------------
-    | Define una relación de uno a muchos.
-    |---------------------------------------------------------------------------
-    */
+
     public function hasMany($relatedModel, $foreignKey, $localKey = 'id') {
         $relatedInstance = new $relatedModel();
         return $relatedInstance->where($foreignKey, '=', $this->$localKey)->get();
     }
-    
-    /*
-    |---------------------------------------------------------------------------
-    | Define una relación inversa de uno a muchos.
-    |---------------------------------------------------------------------------
-    */
+
     public function belongsTo($relatedModel, $foreignKey, $ownerKey = 'id') {
         $relatedInstance = new $relatedModel();
         return $relatedInstance->where($ownerKey, '=', $this->$foreignKey)->first();
     }
-    
-    /*
-    |---------------------------------------------------------------------------
-    | Define una relación de muchos a muchos a través de una tabla pivote.
-    |---------------------------------------------------------------------------
-    */
+
     public function belongsToMany($relatedModel, $pivotTable, $foreignKey, $relatedKey, $localKey = 'id') {
         $queryBuilder = new QueryBuilder($this->queryBuilder->getPdo());
         $results = $queryBuilder
-        ->select('*')
-        ->from($pivotTable)
-        ->where($foreignKey, '=', $this->$localKey)
-        ->get();
+            ->select('*')
+            ->from($pivotTable)
+            ->where($foreignKey, '=', $this->$localKey)
+            ->get();
         
         $relatedInstance = new $relatedModel();
         $ids = array_column($results, $relatedKey);
-        
-        return $relatedInstance->whereIn('id', $ids)->get();
-    }
-    
-    /*
-    |---------------------------------------------------------------------------
-    | Define una relación de uno a muchos a través de un modelo intermedio.
-    |---------------------------------------------------------------------------
-    */
-    public function hasManyThrough($relatedModel, $throughModel, $foreignKey, $secondForeignKey, $localKey = 'id') {
-        $throughInstance = new $throughModel();
-        $relatedInstance = new $relatedModel();
-        
-        $throughResults = $throughInstance->where($foreignKey, '=', $this->$localKey)->get();
-        $ids = array_column($throughResults, $secondForeignKey);
         
         return $relatedInstance->whereIn('id', $ids)->get();
     }
