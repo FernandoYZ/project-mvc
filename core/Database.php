@@ -29,6 +29,18 @@ class Database {
         $this->getConnection()->beginTransaction();
     }
 
+    public function transaction(callable $callback) {
+        try {
+            $this->beginTransaction();
+            $callback($this->getConnection());
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollBack();
+            throw $e;
+        }
+    }
+    
+
     public function commit() {
         $this->getConnection()->commit();
     }
