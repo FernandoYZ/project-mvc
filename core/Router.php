@@ -4,10 +4,12 @@ namespace Core;
 
 class Router {
     protected $database;
+    protected $views;
     protected $exceptionHandler;
 
-    public function __construct(Database $database) {
+    public function __construct(Database $database, Views $views) {
         $this->database = $database;
+        $this->views = $views;
     }
 
     public function setExceptionHandler(ExceptionHandler $handler) {
@@ -17,7 +19,7 @@ class Router {
 
     public function route($requestUri) {
         try {
-            Route::run($requestUri);
+            Route::run($requestUri, $this->views, $this->database);
         } catch (\Exception $e) {
             if ($this->exceptionHandler) {
                 $this->exceptionHandler->handle($e);
