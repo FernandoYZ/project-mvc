@@ -30,7 +30,8 @@ function layout($path) {
 }
 
 function base_url($path = '') {
-    return 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim($path, '/');
+    $scheme = $_SERVER['REQUEST_SCHEME'] ?? 'http';
+    return $scheme . '://' . $_SERVER['HTTP_HOST'] . '/' . trim($path, '/');
 }
 
 // Acceso a la carpeta public
