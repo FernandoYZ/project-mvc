@@ -23,6 +23,11 @@ class QueryBuilder {
         return $this;
     }
 
+    public function table($table) {
+        $this->query = "SELECT * FROM $table";
+        return $this;
+    }
+
     public function join($table, $first, $operator, $second, $type = 'INNER') {
         $this->query .= " $type JOIN $table ON $first $operator $second";
         return $this;
@@ -89,6 +94,17 @@ class QueryBuilder {
             return $statement->fetch(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
             // Manejo de errores
+            throw new \Exception('Query failed: ' . $e->getMessage());
+        }
+    }
+
+    public function exists() {
+        $this->query = "SELECT EXISTS(" . $this->query . ")";
+        $statement = $this->pdo->prepare($this->query);
+        try {
+            $statement->execute($this->bindings);
+            return $statement->fetchColumn() > 0;
+        } catch (\PDOException $e) {
             throw new \Exception('Query failed: ' . $e->getMessage());
         }
     }

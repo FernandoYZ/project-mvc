@@ -80,7 +80,7 @@ class Route {
         return self::$routes;
     }
 
-    public static function run() {
+    public static function run($requestUri, $views, $database) {
         $request = new Request();
         $response = new Response();
     
@@ -95,12 +95,12 @@ class Route {
         foreach (self::$routes[$method] as $route => $details) {
             if (preg_match("#^$route$#", $uri, $matches)) {
                 array_shift($matches); // Remove full match
-                return MiddlewareHandler::applyMiddlewares($details['middleware'], $details['handler'], $matches);
+                return MiddlewareHandler::applyMiddlewares($details['middleware'], $details['handler'], $matches, $views, $database);
             }
         }
     
         self::handleException(new \Exception('Ruta no encontrada', 404));
-    }    
+    }   
 
     protected static function reset() {
         self::$prefix = '';

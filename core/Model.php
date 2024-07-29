@@ -49,4 +49,34 @@ class Model {
     protected function getTable() {
         return strtolower((new \ReflectionClass($this))->getShortName());
     }
+
+    // Relaciones
+    public function hasOne($relatedModel, $foreignKey, $localKey = 'id') {
+        $relatedInstance = new $relatedModel();
+        return $relatedInstance->where($foreignKey, '=', $this->$localKey)->first();
+    }
+
+    public function hasMany($relatedModel, $foreignKey, $localKey = 'id') {
+        $relatedInstance = new $relatedModel();
+        return $relatedInstance->where($foreignKey, '=', $this->$localKey)->get();
+    }
+
+    public function belongsTo($relatedModel, $foreignKey, $ownerKey = 'id') {
+        $relatedInstance = new $relatedModel();
+        return $relatedInstance->where($ownerKey, '=', $this->$foreignKey)->first();
+    }
+
+    public function belongsToMany($relatedModel, $pivotTable, $foreignKey, $relatedKey, $localKey = 'id') {
+        $queryBuilder = new QueryBuilder($this->queryBuilder->getPdo());
+        $results = $queryBuilder
+            ->select('*')
+            ->from($pivotTable)
+            ->where($foreignKey, '=', $this->$localKey)
+            ->get();
+        
+        $relatedInstance = new $relatedModel();
+        $ids = array_column($results, $relatedKey);
+        
+        return $relatedInstance->whereIn('id', $ids)->get();
+    }
 }

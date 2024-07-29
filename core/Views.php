@@ -8,7 +8,7 @@ class Views {
 
     public function __construct() {
         $this->compiler = new ViewCompiler();
-        $this->cacheDir = __DIR__ . '/../storage/cache/views/';
+        $this->cacheDir = __DIR__ . '/../storage/cache/Views/';
         if (!is_dir($this->cacheDir)) {
             mkdir($this->cacheDir, 0755, true);
         }
@@ -16,7 +16,7 @@ class Views {
 
     public function getView($controller, $view, $data = []) {
         $viewPath = $this->getViewPath($controller, $view);
-        $layoutPath = $this->getViewPath('layouts', 'base');
+        $layoutPath = $this->getViewPath('layouts', 'plantilla');
 
         $cacheKey = md5($viewPath);
         $cacheFile = $this->cacheDir . $cacheKey . '.php';
@@ -39,7 +39,7 @@ class Views {
     }
 
     protected function getViewPath($controller, $view) {
-        $controller = str_replace('App\\Controllers\\', '', $controller);
+        $controller = str_replace('App\\Http\\Controllers\\', '', $controller);
         return __DIR__ . '/../resources/Views/' . $controller . '/' . $view . '.php';
     }
 }
