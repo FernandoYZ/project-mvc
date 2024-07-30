@@ -5,10 +5,16 @@ namespace Core;
 class Database {
     protected $connections = [];
     protected $config;
+    protected static $instance;
 
     public function __construct(array $config) {
         $this->config = $config;
         $this->addConnection('default', $config);
+        self::$instance = $this;
+    }
+
+    public static function getInstance() {
+        return self::$instance;
     }
 
     public function addConnection($name, array $config) {

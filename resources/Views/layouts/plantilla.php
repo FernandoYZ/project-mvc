@@ -8,7 +8,7 @@
 
     <!-------------- Integración de Tailwind con CND --------------->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="<?= media_js('tailwind.config.js') ?>" type="config"></script>
+    <script src="<?= media_js('tailwind.js') ?>" type="module"></script>
     <link href="<?= media_css('tailwind.css') ?>" type="text/tailwindcss" rel="stylesheet">
     <!-------------------------------------------------------------->
 
@@ -31,5 +31,4 @@
         <?php endforeach; ?>
     <?php endif; ?>
     <script src="<?= media_js('main.js') ?>" type="module"></script>
-</body>
 </html>

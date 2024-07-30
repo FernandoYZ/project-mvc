@@ -7,6 +7,7 @@ require_once __DIR__ . '/../app/helpers.php';
 use Core\Router;
 use Core\Database;
 use Core\Views;
+use Core\ExceptionHandler;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
@@ -22,6 +23,8 @@ $databaseConfig = $GLOBALS['config']['database'];
 $database = new Database($databaseConfig);
 $views = new Views();
 $router = new Router($database, $views);
+$exceptionHandler = new ExceptionHandler();
+$router->setExceptionHandler($exceptionHandler);
 
 require_once __DIR__ . '/../routes/web.php';
 

@@ -4,26 +4,23 @@ namespace Core;
 
 class ExceptionHandler {
     public function handle(\Exception $exception) {
-        // 
         error_log($exception->getMessage());
 
-        // Retornar las páginas de errores
         $code = $exception->getCode();
-        switch ($code) {
-            case 404:
-                http_response_code(404);
-                $viewPath = __DIR__ . '/../resources/Views/errors/404.php';
-                break;
-            default:
-                http_response_code(500);
-                $viewPath = __DIR__ . '/../resources/Views/errors/500.php';
-                break;
+        if ($code < 400 || $code >= 600) {
+            $code = 500;
+        }
+        http_response_code($code);
+
+        $viewPath = __DIR__ . '/../resources/views/errors/' . $code . '.php';
+        if (!file_exists($viewPath)) {
+            $viewPath = __DIR__ . '/../resources/views/errors/500.php';
         }
 
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
-            echo 'An error occurred.';
+            echo 'Ocurrió un error';
         }
     }
 }

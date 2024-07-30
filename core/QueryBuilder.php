@@ -7,8 +7,8 @@ class QueryBuilder {
     protected $query;
     protected $bindings;
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = Database::getInstance()->getConnection();
         $this->query = '';
         $this->bindings = [];
     }
@@ -93,7 +93,6 @@ class QueryBuilder {
             $statement->execute($this->bindings);
             return $statement->fetch(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            // Manejo de errores
             throw new \Exception('Query failed: ' . $e->getMessage());
         }
     }
@@ -108,24 +107,32 @@ class QueryBuilder {
             throw new \Exception('Query failed: ' . $e->getMessage());
         }
     }
-
+    
     public function toSql() {
         return $this->query;
     }
-
+    
     // Métodos comunes
-
     public function all($table) {
         $this->select('*')->from($table);
         return $this->get();
     }
-
+    
     public function find($table, $value, $idColumn = 'id') {
         $this->select('*')->from($table)->where($idColumn, '=', $value);
         return $this->first();
     }
-
+    
     public function save($table, $data) {
+        $columns = implode(', ', array_keys($data));
+        $placeholders = implode(', ', array_fill(0, count($data), '?'));
+        $this->query = "INSERT INTO $table ($columns) VALUES ($placeholders)";
+        $this->bindings = array_values($data);
+        $statement = $this->pdo->prepare($this->query);
+        return $statement->execute($this->bindings);
+    }
+    
+    public function insert($table, $data) {
         $columns = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
         $this->query = "INSERT INTO $table ($columns) VALUES ($placeholders)";

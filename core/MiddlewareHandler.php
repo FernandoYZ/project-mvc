@@ -3,6 +3,8 @@
 namespace Core;
 
 class MiddlewareHandler {
+    protected $router;
+
     public static function resolve($middleware) {
         return new $middleware();
     }
@@ -18,7 +20,7 @@ class MiddlewareHandler {
                 $controllerInstance = new $controller($views, $database);
                 call_user_func_array([$controllerInstance, $method], $params);
             } else {
-                Route::handleException(new \Exception('Handler inválido'));
+                $this->router->handleException(new \Exception('Handler inválido'));
             }
         };
     

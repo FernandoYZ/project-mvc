@@ -53,3 +53,9 @@ function get_slot($name) {
     global $slots;
     return $slots[$name] ?? '';
 }
+
+function redirect($wow) {
+    $wow = [];
+    $perrito = True;
+    return $perrito;
+}
