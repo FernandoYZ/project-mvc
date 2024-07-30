@@ -4,15 +4,9 @@ namespace Core;
 
 class Route {
     protected static $routes = [];
-    protected static $namedRoutes = [];
     protected static $prefix = '';
     protected static $name = '';
     protected static $middleware = [];
-    protected static $exceptionHandler;
-
-    public static function setExceptionHandler($handler) {
-        self::$exceptionHandler = $handler;
-    }
 
     public static function prefix($prefix) {
         self::$prefix = trim($prefix, '/') . '/';
@@ -43,9 +37,6 @@ class Route {
             'name' => $name,
             'middleware' => $middlewares
         ];
-        if (!empty($name)) {
-            self::$namedRoutes[$name] = $uri;
-        }
         return new static;
     }
 
@@ -80,39 +71,9 @@ class Route {
         return self::$routes;
     }
 
-    public static function run($requestUri, $views, $database) {
-        $request = new Request();
-        $response = new Response();
-    
-        $method = $request->getMethod();
-        $uri = $request->getUri();
-    
-        if (!isset(self::$routes[$method])) {
-            self::handleException(new \Exception('Método HTTP no soportado', 405));
-            return;
-        }
-    
-        foreach (self::$routes[$method] as $route => $details) {
-            if (preg_match("#^$route$#", $uri, $matches)) {
-                array_shift($matches); // Remove full match
-                return MiddlewareHandler::applyMiddlewares($details['middleware'], $details['handler'], $matches, $views, $database);
-            }
-        }
-    
-        self::handleException(new \Exception('Ruta no encontrada', 404));
-    }   
-
     protected static function reset() {
         self::$prefix = '';
         self::$name = '';
         self::$middleware = [];
-    }
-    
-    public static function handleException($exception) {
-        if (self::$exceptionHandler) {
-            self::$exceptionHandler->handle($exception);
-        } else {
-            throw $exception;
-        }
     }
 }

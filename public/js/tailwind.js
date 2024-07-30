@@ -2,7 +2,6 @@ tailwind.config = {
     theme: {
         extend: {
             colors: {
-                clifford: '#da373d',
                 negro: {
                     50: '#f6f6f6',
                     100: '#e7e7e7',
@@ -15,6 +14,19 @@ tailwind.config = {
                     800: '#454545',
                     900: '#3d3d3d',
                     950: '#000000',
+                },
+                corn: {
+                    50: '#ffffe7',
+                    100: '#ffffc1',
+                    200: '#fffc86',
+                    300: '#fff241',
+                    400: '#ffe10e',
+                    500: '#e5be01',
+                    600: '#d09b00',
+                    700: '#a66f02',
+                    800: '#89560a',
+                    900: '#74460f',
+                    950: '#442504',
                 },
             },
             fontFamily: {

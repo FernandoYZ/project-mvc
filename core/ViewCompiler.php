@@ -16,7 +16,6 @@ class ViewCompiler {
         return ob_get_clean();
     }
 
-    // Limpieza en las vistas para usar layouts
     public function renderWithLayout($layoutPath, $viewPath, $data = []) {
         ob_start();
         

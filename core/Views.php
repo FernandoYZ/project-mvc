@@ -40,6 +40,8 @@ class Views {
 
     protected function getViewPath($controller, $view) {
         $controller = str_replace('App\\Http\\Controllers\\', '', $controller);
+        $controller = str_replace('\\', '/', $controller);
         return __DIR__ . '/../resources/Views/' . $controller . '/' . $view . '.php';
     }
+    
 }
