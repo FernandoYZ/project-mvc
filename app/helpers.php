@@ -43,6 +43,10 @@ function media_js($file = '') {
     return '/js/' . $file;
 }
 
+function assets($file = ''){
+    return '/build/assets/' . $file;
+}
+
 // Está para probar con ViewCompiler 
 function slot($name, $content) {
     global $slots;
