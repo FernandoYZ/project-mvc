@@ -7,9 +7,7 @@
     <meta name="description" content="<?= $description ?? '' ?>">
 
     <!-------------- Integración de Tailwind con CND --------------->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="<?= media_js('tailwind.js') ?>" type="module"></script>
-    <link href="<?= media_css('tailwind.css') ?>" type="text/tailwindcss" rel="stylesheet">
+    <link rel="stylesheet" href="<?= assets('app.css') ?>">
     <!-------------------------------------------------------------->
 
     <?php if (!empty($css)) : ?>

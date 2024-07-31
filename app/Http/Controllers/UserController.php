@@ -19,7 +19,7 @@ class UserController extends Controller {
             'css' => ['/pages/user.css']
         ];
 
-        return $this->views->getView('users', 'users', $data);;
+        return $this->views->getView('users', 'index', $data);;
     }
 
     public function create() {
