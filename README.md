@@ -9,7 +9,9 @@ Este proyecto es un proyecto personal diseñado para ofrecer una estructura modu
 ```plaintext
 project/
 ├── app/
-│   ├── Controllers/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   └── Middleware/
 │   ├── Models/
 │   └── helpers.php
 ├── bootstrap/
@@ -19,24 +21,34 @@ project/
 │   └── database.php
 ├── core/
 │   ├── Autoload.php
-│   ├── BaseController.php
-│   ├── BaseModel.php
 │   ├── Controller.php
 │   ├── Database.php
 │   ├── ExceptionHandler.php
 │   ├── Middleware.php
+│   ├── MiddlewareHandler.php
+│   ├── Model.php
 │   ├── QueryBuilder.php
+│   ├── Request.php
+│   ├── Response.php
+│   ├── Route.php
 │   ├── Router.php
+│   ├── Validation.php
 │   ├── ViewCompiler.php
 │   └── Views.php
 ├── public/
+│   ├── build/assets
+│   │   ├── app.css
+│   │   └── app.js
 │   ├── css/
 │   ├── js/
 │   ├── .htaccess
 │   └── index.php
 ├── resources/
-│   ├── Views/
+│   ├── js/
+│   ├── css/
+│   └── Views/
 ├── routes/
+│   ├── auth.php
 │   └── web.php
 ├── storage/
 │   ├── cache/
@@ -157,7 +169,7 @@ class User extends BaseModel
 
 
 ##Notas adicionales
-- **Seguridad: **Asegúrate de validar y sanitizar los datos recibidos en el backend para evitar inyecciones SQL y otros ataques.
-- **SEO: **Si el contenido de la aplicación es dinámico, considera usar técnicas como el renderizado del lado del servidor (SSR) o pre-renderizado para mejorar el SEO.
+- **Seguridad:** Asegúrate de validar y sanitizar los datos recibidos en el backend para evitar inyecciones SQL y otros ataques.
+- **SEO:** Si el contenido de la aplicación es dinámico, considera usar técnicas como el renderizado del lado del servidor (SSR) o pre-renderizado para mejorar el SEO.
 - **Rendimiento:** Optimiza las consultas a la base de datos y considera usar técnicas de caching para mejorar el rendimiento de la aplicación.
 
