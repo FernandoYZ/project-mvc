@@ -1,7 +1,0 @@
-# Forzar detección correcta de lenguajes
-*.php linguist-language=PHP
-*.js linguist-language=JavaScript
-*.css linguist-language=CSS
-*.config linguist-detectable=false
-*.json linguist-detectable=false
-*.lock linguist-detectable=false
