@@ -19,57 +19,60 @@ class UserController extends Controller {
             'css' => ['/pages/user.css']
         ];
 
-        return $this->views->getView('users', 'index', $data);;
+        return $this->views->getView('users', 'user', $data);;
     }
 
     public function create() {
         return view('users.create');
     }
 
-    // public function store(Validation $request) {
-    //     $validatedData = $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email|unique:users,email',
-    //         'password' => 'required|string|min:8|confirmed',
-    //     ]);
+    /*
 
-    //     User::create([
-    //         'name' => $validatedData['name'],
-    //         'email' => $validatedData['email'],
-    //         'password' => password_hash($validatedData['password'], PASSWORD_BCRYPT),
-    //     ]);
+    public function store(Validation $request) {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
 
-    //     return redirect('/users')->with('success', 'Usuario creado exitosamente');
-    // }
+        User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => password_hash($validatedData['password'], PASSWORD_BCRYPT),
+        ]);
 
-    // public function edit($id) {
-    //     $user = User::find($id);
-    //     return view('users.edit', ['user' => $user]);
-    // }
+        return redirect('/users')->with('success', 'Usuario creado exitosamente');
+    }
 
-    // public function update(Validation $request, $id) {
-    //     $validatedData = $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email|unique:users,email,' . $id,
-    //         'password' => 'nullable|string|min:8|confirmed',
-    //     ]);
+    public function edit($id) {
+        $user = User::find($id);
+        return view('users.edit', ['user' => $user]);
+    }
 
-    //     $data = [
-    //         'name' => $validatedData['name'],
-    //         'email' => $validatedData['email']
-    //     ];
+    public function update(Validation $request, $id) {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
 
-    //     if (!empty($validatedData['password'])) {
-    //         $data['password'] = password_hash($validatedData['password'], PASSWORD_BCRYPT);
-    //     }
+        $data = [
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email']
+        ];
 
-    //     User::update($id, $data);
+        if (!empty($validatedData['password'])) {
+            $data['password'] = password_hash($validatedData['password'], PASSWORD_BCRYPT);
+        }
 
-    //     return redirect('/users')->with('success', 'Usuario actualizado exitosamente');
-    // }
+        User::update($id, $data);
 
-    // public function destroy($id) {
-    //     User::delete($id);
-    //     return redirect('/users')->with('success', 'Usuario eliminado exitosamente');
-    // }
+        return redirect('/users')->with('success', 'Usuario actualizado exitosamente');
+    }
+
+    public function destroy($id) {
+        User::delete($id);
+        return redirect('/users')->with('success', 'Usuario eliminado exitosamente');
+    }
+    */
 }

@@ -1,0 +1,9 @@
+*.css diff=css
+*.html diff=html
+*.php diff=php
+*.lock diff=json
+*.md diff=markdown
+
+*.php linguist-language=PHP
+*.js linguist-language=JavaScript
+*.css linguist-language=CSS
