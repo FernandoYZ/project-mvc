@@ -1,11 +1,9 @@
 <?php
 
-function env($key, $default = null) {
-    $value = getenv($key);
-    if ($value === false) {
-        return $default;
+if (!function_exists('env')) {
+    function env($key, $default = null) {
+        return $_ENV[$key] ?? $default;
     }
-    return $value;
 }
 
 function view($view, $data = []) {
