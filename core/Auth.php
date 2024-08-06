@@ -2,7 +2,7 @@
 
 namespace Core\Auth;
 
-use Core\Database\QueryBuilder;
+use Core\QueryBuilder;
 use Core\Utils\Password;
 
 class Auth
@@ -26,7 +26,7 @@ class Auth
         $hashedPassword = Password::hash($password);
 
         // Usar QueryBuilder para insertar datos
-        return $this->queryBuilder->table('users')->insert([
+        return $this->queryBuilder->insert('users', [
             'username' => $username,
             'password' => $hashedPassword
         ]);
@@ -42,9 +42,9 @@ class Auth
     public function login($username, $password)
     {
         // Usar QueryBuilder para seleccionar usuario
-        $user = $this->queryBuilder->table('users')
-            ->select('*')
-            ->where('username', $username)
+        $user = $this->queryBuilder->select('*')
+            ->from('users')
+            ->where('username', '=', $username)
             ->first();
 
         if ($user && Password::verify($password, $user['password'])) {
@@ -84,9 +84,9 @@ class Auth
     {
         if ($this->check()) {
             // Usar QueryBuilder para obtener información del usuario
-            return $this->queryBuilder->table('users')
-                ->select('*')
-                ->where('id', $_SESSION['user_id'])
+            return $this->queryBuilder->select('*')
+                ->from('users')
+                ->where('id', '=', $_SESSION['user_id'])
                 ->first();
         }
 
