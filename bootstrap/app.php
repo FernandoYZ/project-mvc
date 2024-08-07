@@ -25,7 +25,10 @@ $router = new Router($database, $views);
 $exceptionHandler = new ExceptionHandler();
 $router->setExceptionHandler($exceptionHandler);
 
-require_once __DIR__ . '/../routes/web.php';
+$routes = ['web.php', 'api.php', 'auth.php'];
+foreach ($routes as $routeFile) {
+    require_once __DIR__ . '/../routes/' . $routeFile;
+}
 
 $app = new App($GLOBALS['config'], $router, $database);
 return $app;
