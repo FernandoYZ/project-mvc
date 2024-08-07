@@ -11,7 +11,19 @@ project/
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
+│   │   │   └── Auth/
+│   │   │       ├── AuthenticatedSessionController.php
+│   │   │       ├── ConfirmablePasswordController.php
+│   │   │       ├── EmailVerificationNotificationController.php
+│   │   │       ├── EmailVerificationPromtController.php
+│   │   │       ├── NewPassword.php
+│   │   │       ├── PasswordController.php
+│   │   │       ├── PasswordResetLinkController.php
+│   │   │       ├── RegisteredUserController.php
+│   │   │       └── VerifyEmailController.php
 │   │   └── Middleware/
+│   │   │   ├── Authenticate.php
+│   │   │   └── Guest.php
 │   ├── Models/
 │   └── helpers.php
 ├── bootstrap/
@@ -20,7 +32,6 @@ project/
 │   ├── app.php
 │   └── database.php
 ├── core/
-│   ├── Autoload.php
 │   ├── Controller.php
 │   ├── Database.php
 │   ├── ExceptionHandler.php
