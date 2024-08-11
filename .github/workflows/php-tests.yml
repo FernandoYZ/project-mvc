@@ -51,10 +51,14 @@ jobs:
           exit 1
         fi
 
+    - name: List directory contents
+      run: |
+        ls -R
+
     - name: Run tests
       run: |
         php -v
-        vendor/bin/phpunit --configuration phpunit.xml
+        vendor/bin/phpunit --testsuite tests
 
     - name: Upload Test Reports
       if: always()
