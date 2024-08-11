@@ -41,12 +41,16 @@ jobs:
         coverage: none
 
     - name: Install Composer dependencies
-      run: composer install --no-progress --no-suggest --prefer-dist
+      run: |
+        composer install --no-progress --no-suggest --prefer-dist
+
+    - name: Copy .env file
+      run: cp .env.example .env || cp .env .env
 
     - name: Run tests
       run: |
         php -v
-        vendor/bin --configuration phpunit.xml 
+        vendor/bin/phpunit --configuration phpunit.xml
 
     - name: Upload Test Reports
       if: always()
@@ -58,4 +62,4 @@ jobs:
     - name: Clean up
       if: always()
       run: |
-        # Optional: Add commands to clean up the test environment if needed
+        php artisan db:wipe --env=testing
