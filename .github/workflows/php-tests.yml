@@ -46,7 +46,7 @@ jobs:
     - name: Run tests
       run: |
         php -v
-        vendor/bin/phpunit --configuration phpunit.xml
+        vendor/bin --configuration phpunit.xml 
 
     - name: Upload Test Reports
       if: always()
